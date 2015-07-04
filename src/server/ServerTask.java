@@ -24,6 +24,7 @@ public class ServerTask implements Runnable{
     public void run() {
 
         System.out.println("New client: "+clientSocket.getInetAddress().getHostAddress());
+
         PrintWriter out;
         BufferedReader in;
 
@@ -33,31 +34,34 @@ public class ServerTask implements Runnable{
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             answerClient(in,out);
 
-
         } catch (IOException e) {
             e.printStackTrace();
         }
 
     }
 
+    /**
+     * Method that listen that catch the string sent by the client and send it back with upper case.
+     * @param in    The stream from the client
+     * @param out   The stream to the client
+     * @throws IOException
+     */
     private void answerClient(BufferedReader in,PrintWriter out) throws IOException{
 
-        boolean running=true;
-
         String textFromClient;
-        while (running) {
+        while (true) {
             textFromClient = in.readLine();
             System.out.println(textFromClient);
 
-            out.print(textFromClient.toUpperCase());
+            out.println(textFromClient.toUpperCase());
             out.flush();
 
-            if(textFromClient.equals("END")){
+            if(textFromClient.substring(0,3).equals("end")){
                 System.out.println("Connection ended with client: "+clientSocket.getInetAddress().getHostAddress());
-                running=false;
                 in.close();
                 out.close();
                 clientSocket.close();
+                break;
             }
 
         }

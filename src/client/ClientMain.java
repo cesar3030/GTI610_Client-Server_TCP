@@ -14,7 +14,7 @@ public class ClientMain {
     public static void main(String[] args) {
 
         String serverIp = "127.0.0.1";//args[0];
-        int serverPort= 3400;//Integer.parseInt(args[1]);
+        int serverPort= 3401;//Integer.parseInt(args[1]);
 
         try {
             Socket mySocket = new Socket(serverIp,serverPort);
@@ -22,8 +22,9 @@ public class ClientMain {
             PrintWriter out;
             BufferedReader in;
 
-            //we open a print writer to send back the string to the client
+            //we open a print writer to send the string to the server
             out = new PrintWriter(mySocket.getOutputStream(), true);
+            //we open the bufferreader to be able to read what the server sends
             in = new BufferedReader(new InputStreamReader(mySocket.getInputStream()));
             dialogueWithServer(mySocket,in, out);
             in.close();
@@ -38,29 +39,38 @@ public class ClientMain {
 
     }
 
-
+    /**
+     * Method that send the text enter by the user through the keyboard to the server
+     * @param mySocket  (used to get the client's IP address)
+     * @param in        Stream from the server
+     * @param out       Stream to the server
+     * @throws IOException
+     */
     private static void dialogueWithServer(Socket mySocket, BufferedReader in, PrintWriter out) throws IOException {
 
+        //buffer used to catch the text enter by the client
         BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
-        boolean running=true;
 
         String textToSend;
         String textReceived;
 
-        while (running){
+        while (true){
             textToSend=read.readLine();
-            out.println(textToSend + " "+mySocket.getInetAddress().getHostAddress());  // send to server
+            //We send the text enter by the client to the server with the ip adress at the end
+            out.println(textToSend + " "+mySocket.getInetAddress().getHostAddress());
             out.flush();
+            //We read the answer form the server
             textReceived=in.readLine();
             System.out.println(textReceived);
 
-            if(textReceived.equals(new String("END"))){
+            //If END is received, we close the buffers, the socket and we stop the application
+            if(textReceived.substring(0,3).equals(new String("END"))){
                 System.out.println("Connection ended with the server");
-                running=false;
                 in.close();
                 read.close();
                 out.close();
                 mySocket.close();
+                break;
             }
         }
     }

@@ -13,16 +13,21 @@ public class ServerMain {
     public static void main(String[] args) {
         try {
 
+            //We create the server scocket with the port wanted
             ServerSocket server = new ServerSocket(ServerParameters.PORT);
+
             System.out.println("Server Started");
+
+            //We wait client connection request
             while (true){
-                Socket clientSocket = server.accept();
-                ServerTask newTask = new ServerTask(clientSocket);
+                //the server listen and handle client connection
+                Socket socket = server.accept();
+                //we create a new serverTask object that will dialog with the client in another thread
+                ServerTask newTask = new ServerTask(socket);
+                //We create and start the thread
                 Thread thread = new Thread(newTask);
-                thread.run();
+                thread.start();
             }
-
-
 
         } catch (IOException e) {
             e.printStackTrace();

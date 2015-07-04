@@ -4,5 +4,5 @@ package server;
  */
 public class ServerParameters {
 
-    public static final int PORT = 3400;
+    public static final int PORT = 3401;
 }
