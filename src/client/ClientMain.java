@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.Socket;
 
 /**
@@ -13,8 +14,9 @@ public class ClientMain {
 
     public static void main(String[] args) {
 
-        String serverIp = "127.0.0.1";//args[0];
-        int serverPort= 3401;//Integer.parseInt(args[1]);
+        //We store the Server IP and Port given as argument to the program
+        String serverIp = args[0];
+        int serverPort= Integer.parseInt(args[1]);
 
         try {
             Socket mySocket = new Socket(serverIp,serverPort);
@@ -26,7 +28,9 @@ public class ClientMain {
             out = new PrintWriter(mySocket.getOutputStream(), true);
             //we open the bufferreader to be able to read what the server sends
             in = new BufferedReader(new InputStreamReader(mySocket.getInputStream()));
+
             dialogueWithServer(mySocket,in, out);
+
             in.close();
             out.close();
             mySocket.close();
@@ -40,7 +44,7 @@ public class ClientMain {
     }
 
     /**
-     * Method that send the text enter by the user through the keyboard to the server
+     * Method that send the text enter by the user through the keyboard to the server and print the respond from the server on the console
      * @param mySocket  (used to get the client's IP address)
      * @param in        Stream from the server
      * @param out       Stream to the server
@@ -56,9 +60,11 @@ public class ClientMain {
 
         while (true){
             textToSend=read.readLine();
+
             //We send the text enter by the client to the server with the ip adress at the end
             out.println(textToSend + " "+mySocket.getInetAddress().getHostAddress());
             out.flush();
+
             //We read the answer form the server
             textReceived=in.readLine();
             System.out.println(textReceived);

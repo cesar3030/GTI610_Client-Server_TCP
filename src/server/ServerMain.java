@@ -11,10 +11,11 @@ import java.net.Socket;
 public class ServerMain {
 
     public static void main(String[] args) {
+        ServerSocket server=null;
         try {
 
             //We create the server scocket with the port wanted
-            ServerSocket server = new ServerSocket(ServerParameters.PORT);
+            server = new ServerSocket(ServerParameters.PORT);
 
             System.out.println("Server Started");
 
